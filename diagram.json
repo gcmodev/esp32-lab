@@ -7,29 +7,59 @@
       "type": "board-esp32-devkit-c-v4",
       "id": "esp",
       "top": -76.8,
-      "left": -24,
+      "left": -52.8,
       "attrs": {}
     },
     {
       "type": "board-ssd1306",
       "id": "oled1",
-      "top": -67.2,
-      "left": 268.8,
+      "top": -76.8,
+      "left": 259.2,
       "attrs": {
         "i2cAddress": "0x3c"
       }
     },
     {
       "type": "wokwi-pushbutton",
-      "id": "btn1",
-      "top": 105.6,
-      "left": 288,
-      "attrs": {
-        "color": "green",
-        "label": "TEST",
-        "key": "T",
-        "bounce": "0"
-      }
+      "id": "btnUp",
+      "top": 76.8,
+      "left": 249.6,
+      "attrs": { "color": "blue", "label": "UP", "key": "U", "bounce": "0" }
+    },
+    {
+      "type": "wokwi-pushbutton",
+      "id": "btnDown",
+      "top": 172.8,
+      "left": 249.6,
+      "attrs": { "color": "blue", "label": "DOWN", "key": "D", "bounce": "0" }
+    },
+    {
+      "type": "wokwi-pushbutton",
+      "id": "btnSelect",
+      "top": 124.8,
+      "left": 345.6,
+      "attrs": { "color": "green", "label": "SELECT", "key": "E", "bounce": "0" }
+    },
+    {
+      "type": "wokwi-pushbutton",
+      "id": "btnBack",
+      "top": 124.8,
+      "left": 153.6,
+      "attrs": { "color": "yellow", "label": "BACK", "key": "B", "bounce": "0" }
+    },
+    {
+      "type": "wokwi-pushbutton",
+      "id": "btnSend",
+      "top": 230.4,
+      "left": 336,
+      "attrs": { "color": "red", "label": "SEND", "key": "S", "bounce": "0" }
+    },
+    {
+      "type": "wokwi-pushbutton",
+      "id": "btnRx",
+      "top": 230.4,
+      "left": 153.6,
+      "attrs": { "color": "green", "label": "RX SIM", "key": "R", "bounce": "0" }
     }
   ],
   "connections": [
@@ -37,8 +67,25 @@
     [ "esp:22", "oled1:SCL", "blue", [] ],
     [ "esp:3V3", "oled1:VCC", "red", [] ],
     [ "esp:GND.2", "oled1:GND", "black", [] ],
-    [ "esp:27", "btn1:1.l", "orange", [] ],
-    [ "btn1:2.l", "esp:GND.3", "black", [] ],
+
+    [ "esp:32", "btnUp:1.l", "orange", [] ],
+    [ "btnUp:2.l", "esp:GND.3", "black", [] ],
+
+    [ "esp:33", "btnDown:1.l", "orange", [] ],
+    [ "btnDown:2.l", "esp:GND.3", "black", [] ],
+
+    [ "esp:25", "btnSelect:1.l", "orange", [] ],
+    [ "btnSelect:2.l", "esp:GND.3", "black", [] ],
+
+    [ "esp:26", "btnBack:1.l", "orange", [] ],
+    [ "btnBack:2.l", "esp:GND.3", "black", [] ],
+
+    [ "esp:27", "btnSend:1.l", "orange", [] ],
+    [ "btnSend:2.l", "esp:GND.3", "black", [] ],
+
+    [ "esp:14", "btnRx:1.l", "orange", [] ],
+    [ "btnRx:2.l", "esp:GND.3", "black", [] ],
+
     [ "esp:TX", "$serialMonitor:RX", "", [] ],
     [ "esp:RX", "$serialMonitor:TX", "", [] ]
   ],

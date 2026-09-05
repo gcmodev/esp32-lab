@@ -1,0 +1,54 @@
+name: LoRa handheld V1 visual UI test
+version: 1
+author: ChatGPT
+
+steps:
+  - wait-serial: 'LORA_READY'
+  - delay: 80ms
+  - take-screenshot:
+      part-id: oled1
+      save-to: 'oled-home.png'
+
+  - set-control:
+      part-id: btnSelect
+      control: pressed
+      value: 1
+  - wait-serial: 'UI:PRESETS'
+  - set-control:
+      part-id: btnSelect
+      control: pressed
+      value: 0
+  - delay: 80ms
+  - take-screenshot:
+      part-id: oled1
+      save-to: 'oled-presets.png'
+
+  - set-control:
+      part-id: btnSend
+      control: pressed
+      value: 1
+  - wait-serial: 'TX:OK'
+  - set-control:
+      part-id: btnSend
+      control: pressed
+      value: 0
+  - delay: 80ms
+  - take-screenshot:
+      part-id: oled1
+      save-to: 'oled-sent.png'
+
+  - delay: 1300ms
+
+  - set-control:
+      part-id: btnRx
+      control: pressed
+      value: 1
+  - wait-serial: 'RX:PING FROM H2'
+  - set-control:
+      part-id: btnRx
+      control: pressed
+      value: 0
+  - delay: 80ms
+  - take-screenshot:
+      part-id: oled1
+      save-to: 'oled-received.png'
