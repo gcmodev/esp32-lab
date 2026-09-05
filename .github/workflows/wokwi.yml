@@ -1,0 +1,46 @@
+name: ESP32 Wokwi Test
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-simulate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install PlatformIO
+        run: pip install --upgrade platformio
+
+      - name: Build ESP32 firmware
+        run: pio run
+
+      - name: Run Wokwi integration test
+        uses: wokwi/wokwi-ci-action@v1
+        with:
+          token: ${{ secrets.WOKWI_CLI_TOKEN }}
+          path: /
+          timeout: 10000
+          scenario: button.test.yaml
+          expect_text: "BUTTON:RELEASED"
+          fail_text: "OLED_INIT_FAILED"
+          serial_log_file: "wokwi-serial.log"
+
+      - name: Upload Wokwi serial log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: wokwi-serial-log
+          path: wokwi-serial.log
+          if-no-files-found: ignore
