@@ -32,6 +32,8 @@ struct Button {
   unsigned long changedAt = 0;
   bool pressedEvent = false;
 
+  explicit Button(int assignedPin) : pin(assignedPin) {}
+
   void begin() {
     pinMode(pin, INPUT_PULLUP);
     raw = stable = digitalRead(pin);
