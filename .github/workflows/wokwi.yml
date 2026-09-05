@@ -4,8 +4,13 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
+    paths-ignore:
+      - "screenshots/**"
   pull_request:
     branches: [main]
+
+permissions:
+  contents: write
 
 jobs:
   build-and-simulate:
@@ -26,21 +31,47 @@ jobs:
       - name: Build ESP32 firmware
         run: pio run
 
-      - name: Run Wokwi integration test
+      - name: Run Wokwi integration and visual test
         uses: wokwi/wokwi-ci-action@v1
         with:
           token: ${{ secrets.WOKWI_CLI_TOKEN }}
           path: /
-          timeout: 10000
+          timeout: 12000
           scenario: button.test.yaml
           expect_text: "BUTTON:RELEASED"
           fail_text: "OLED_INIT_FAILED"
           serial_log_file: "wokwi-serial.log"
 
-      - name: Upload Wokwi serial log
+      - name: Collect screenshots
+        if: always()
+        shell: bash
+        run: |
+          mkdir -p screenshots
+          for file in oled-*.png; do
+            [ -e "$file" ] || continue
+            mv "$file" screenshots/
+          done
+
+      - name: Upload Wokwi visual results
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: wokwi-serial-log
-          path: wokwi-serial.log
-          if-no-files-found: ignore
+          name: wokwi-visual-results
+          path: |
+            screenshots/*.png
+            wokwi-serial.log
+          if-no-files-found: warn
+
+      - name: Publish latest screenshots to repository
+        if: success() && github.event_name != 'pull_request'
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add screenshots/*.png
+          if git diff --cached --quiet; then
+            echo "Screenshots are unchanged."
+          else
+            git commit -m "Update Wokwi visual snapshots [skip ci]"
+            git push
+          fi
